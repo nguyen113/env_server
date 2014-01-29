@@ -28,6 +28,11 @@ function closeDB(){
 $server=new soap_server();
 $server->configureWSDL('Calculator',serverURL);
 
+///////////////////////////////
+// Register function to soap server:
+// $server->register('<function name>', <input value>, <output value>, serverURL);
+///////////////////////////////
+
 //register service for user table
 $server->register('set_user', array('username'=>'xsd:string','website'=>'xsd:string','role'=>'xsd:string'),array('outcome'=>'xsd:string'), serverURL);
 $server->register('get_user', array('id'=>'xsd:string'),array('username'=>'xsd:string','website'=>'xsd:string','role'=>'xsd:string'), serverURL);
@@ -52,6 +57,7 @@ $server->register('get_correct', array('id'=>'xsd:string'),array('id'=>'xsd:stri
 $server->register('set_question_time', array('id'=>'xsd:string','time'=>'xsd:string'),array('outcome'=>'xsd:string'), serverURL);
 
 //khai bao return cho cac function vua dang ky
+// luon co connectDB(); va closeDB(); neu dung database
 function set_user($username, $site, $role){
 	connectDB();
 	$x="INSERT INTO env_user( username, site, role ) VALUES ('"&$username&"',  '"&$site&"',  '"$role"')";
