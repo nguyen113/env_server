@@ -1,38 +1,133 @@
 <?php
 // implementation of add function
 include ("connect.php");
-function return_quest($video_id,$quest_id)
+
+function addUser($user_name,$user_fullname,$user_site)
 {
-	
-   $a="select * from question where quest_id='$quest_id' and video_id='$video_id'";
-   $b=mysql_query($a) or die(mysql_error());
-   while($c=mysql_fetch_row($b))
-   {
-	   $quest_object=array('id'=>$c[0],'content'=>$c[1],'a'=>$c[2],'b'=>$c[3],'c'=>$c[4],'d'=>$c[5],'ans'=>$c[6]);
-   }
-	return json_encode($quest_object);
+	$x="REPLACE INTO env_user (userid, fullname, site) VALUES ('$user_name','$user_fullname','$user_site')";
+   	if(mysql_query($x)){
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
 }
-function return_video($video_id)
+
+function addQuestion($video_id,$question_content,$answer_a,$answer_b,$answer_c,$answer_d,$answer_correct,$question_time)
 {
-	$x="select * from env_video where id = '".$video_id."'";
+	$x="INSERT INTO env_question (videoid, question, answera, answerb, answerc, answerd, correct, time) VALUES ('$video_id','$question_content','$answer_a','$answer_b','$answer_c','$answer_d','$answer_correct','$question_time')";
+   	if(mysql_query($x)){
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+}
+
+function addVideo($user_id,$site,$content,$url,$name)
+{
+	$x="INSERT INTO env_video (userid, site, content, url, time) VALUES ('$user_id','$site','$content','$url','$name')";
+   	if(mysql_query($x)){
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+}
+
+function editQuestion($question_id,$video_id,$question_content,$answer_a,$answer_b,$answer_c,$answer_d,$answer_correct,$question_time)
+{
+	$x="UPDATE env_question SET question='$question_content', answera ='$answer_a', answerb = '$answer_b', answerc = '$answer_c', answerd = '$answer_d', correct = '$answer_correct', time ='$question_time'   WHERE id = 'question_id'";
+   	if(mysql_query($x)){
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+}
+
+function editVideo($video_id,$user_id,$site,$content,$url,$name)
+{
+	$x="UPDATE env_video SET content = '$content', url = '$url', name = '$name' WHERE videoid = '$video_id'";
+   	if(mysql_query($x)){
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+}
+
+function deleteQuestion($question_id)
+{
+	$x="DELETE FROM env_question WHERE id = '$question_id'";
+   	if(mysql_query($x)){
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+}
+
+function deleleVideo($video_id)
+{
+   	if(mysql_query($x)){
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+}
+
+function getUserFullName($user_name,$user_site)
+{
+	$x="select fullname from env_user where userid = '$user_name' and site='$user_site'";
    	$y=mysql_query($x) or die(mysql_error());
     while($r = mysql_fetch_array($y)){
-		$items[] = array('id'=>$r[0],'owner'=>$r[1],'content'=>$r[2],'url'=>$r[3],'name'=>$r[4]); 
+		$items = $r[0]; 
+	}
+	return $items;
+}
+
+function getVideoByUser($user_id,$user_site)
+{
+	$x="SELECT * FROM env_video WHERE userid = '$user_id' AND site = '$user_site'";
+   	$y=mysql_query($x) or die(mysql_error());
+    while($r = mysql_fetch_array($y)){
+		$userFullName = getUserFullName($r[1],$r[2]);
+		$items[] = array('videoid'=>$r[0],'username'=>$userFullName,'site'=>$r[2],'content'=>$r[3],'url'=>$r[4],'name'=>$r[5]); 
 	}
 	return json_encode($items);
 }
 
-function get_list_video()
+function getVideo($video_id)
 {
-	$x="select id,url,name,content from env_video";
+	$x="select * from env_video where videoid = '$video_id'";
    	$y=mysql_query($x) or die(mysql_error());
     while($r = mysql_fetch_array($y)){
-		$items[] = array('id'=>$r[0],'url'=>$r[1],'name'=>$r[2],'content'=>$r[3]); 
+		$items[] = array('videoid'=>$r[0],'userid'=>$r[1],'site'=>$r[2],'content'=>$r[3],'url'=>$r[4],'name'=>$r[5]); 
 	}
 	return json_encode($items);
 }
 
-function get_list_question($id)
+function getVideoList()
+{
+	$x="select * from env_video";
+   	$y=mysql_query($x) or die(mysql_error());
+    while($r = mysql_fetch_array($y)){
+		$userFullName = getUserFullName($r[1],$r[2]);
+		$items[] = array('videoid'=>$r[0],'username'=>$userFullName,'site'=>$r[2],'content'=>$r[3],'url'=>$r[4],'name'=>$r[5]); 
+	}
+	return json_encode($items);
+}
+
+function getQuestionList($id)
 {
 	$x="select * from env_question where videoid = $id";
    	$y=mysql_query($x) or die(mysql_error());
@@ -42,15 +137,13 @@ function get_list_question($id)
 	return json_encode($items);
 }
 
-function get_content_by_id($id)
+function getContentById($id)
 {
-	$x="select content from env_video where id = $id";
+	$x="select content from env_video where videoid = $id";
    	$y=mysql_query($x) or die(mysql_error());
     while($r = mysql_fetch_array($y)){
 		$item = $r[0]; 
 	}
 	return $item;
-	
-	
 }
 ?>

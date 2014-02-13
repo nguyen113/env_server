@@ -3,14 +3,56 @@ header('Access-Control-Allow-Origin: *');
 include 'app_config.php';
 require_once ("nusoap-0.9.5/lib/nusoap.php");
 $client=new nusoap_client(serverURL."/server2/servertest.php?wsdl"); 
-if(isset($_POST['q_id'])&&isset($_POST['v_id']))
+
+if(isset($_POST['addUser']))
 {
-		$quest_id=$_POST['q_id'];
-		$video_id=$_POST['v_id'];
-		$param1=array('video_id'=>$video_id,'quest_id'=>$quest_id);
-		$quest_return=$client->call('get_question',$param1);
-		echo $quest_return;
+	$userID=$_POST['userID'];
+	$userFullName=$_POST['userFullName'];
+	$userSite=$_POST['userSite'];
+	$param2=array('user_name'=>$userID,'user_fullname'=>$userFullName,'user_site'=>$userSite);
+	$video_return=$client->call('add_user',$param2);
+	echo $video_return;
 }
+
+if(isset($_POST['add_question']))
+{
+
+}
+
+if(isset($_POST['add_video']))
+{
+
+}
+
+if(isset($_POST['edit_question']))
+{
+
+}
+
+if(isset($_POST['edit_video']))
+{
+
+}
+
+if(isset($_POST['delete_question']))
+{
+
+}
+
+if(isset($_POST['delete_video']))
+{
+
+}
+
+if(isset($_POST['get_user_video']))
+{
+	$userid=$_POST['user_id'];
+	$site=$_POST['site'];
+	$param=array('user_id'=>$userid, 'user_site'=>$site);
+	$list_return=$client->call('get_video_by_user',$param);
+	echo $list_return;
+}
+
 if(isset($_POST['videoID']))
 {
 	$video_id=$_POST['videoID'];
