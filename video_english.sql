@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 10, 2014 at 02:59 PM
+-- Generation Time: Feb 13, 2014 at 09:02 PM
 -- Server version: 5.6.11
 -- PHP Version: 5.5.3
 
@@ -39,7 +39,15 @@ CREATE TABLE IF NOT EXISTS `env_question` (
   `correct` int(11) NOT NULL COMMENT 'correct answer, 1 2 3 or 4',
   `time` int(11) NOT NULL COMMENT 'time in sec the question shows up in video',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `env_question`
+--
+
+INSERT INTO `env_question` (`id`, `videoid`, `question`, `answera`, `answerb`, `answerc`, `answerd`, `correct`, `time`) VALUES
+(1, 1, 'What did he said?', 'Hello', 'Goodbye', 'GoodJob', 'Nice!', 1, 5),
+(2, 1, 'Hi', 'Good afternoon A', 'Good afternoon B', 'Good afternoon C', 'Good afternoon D', 2, 20);
 
 -- --------------------------------------------------------
 
@@ -48,21 +56,20 @@ CREATE TABLE IF NOT EXISTS `env_question` (
 --
 
 CREATE TABLE IF NOT EXISTS `env_user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID of user, auto increment',
-  `username` varchar(20) NOT NULL COMMENT 'username, get from moodle site',
-  `site` text NOT NULL COMMENT 'url of moodle site',
-  `role` int(11) NOT NULL COMMENT 'role in moodle, 1=teacher,2=student, 0=admin',
-  `password` text NOT NULL COMMENT 'password, create to login to our web, no need for user',
-  `token` varchar(60) NOT NULL COMMENT 'token to access to webservice of moodle',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+  `userid` varchar(20) NOT NULL,
+  `fullname` text,
+  `site` char(200) NOT NULL,
+  PRIMARY KEY (`userid`,`site`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `env_user`
 --
 
-INSERT INTO `env_user` (`id`, `username`, `site`, `role`, `password`, `token`) VALUES
-(1, 'test', 'https://www.google.com', 0, '', '');
+INSERT INTO `env_user` (`userid`, `fullname`, `site`) VALUES
+('student', 'John Student', 'http://mm.cvaconsulting.com/moodle'),
+('teacher', 'Jeffrey Sanders', 'http://school.demo.moodle.net'),
+('testuser1', 'test user', 'http://pcnguyen.dyndns.org/moodle');
 
 -- --------------------------------------------------------
 
@@ -71,13 +78,24 @@ INSERT INTO `env_user` (`id`, `username`, `site`, `role`, `password`, `token`) V
 --
 
 CREATE TABLE IF NOT EXISTS `env_video` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id of video',
-  `owner` int(11) NOT NULL COMMENT 'id of video''s owner',
+  `videoid` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id of video',
+  `userid` varchar(20) NOT NULL COMMENT 'id of video''s owner',
+  `site` text NOT NULL,
   `content` text NOT NULL COMMENT 'content, tips of video',
   `url` text NOT NULL COMMENT 'youtube url of video',
   `name` text NOT NULL COMMENT 'name of video, if null, it will be the video name from youtube',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  PRIMARY KEY (`videoid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
+
+--
+-- Dumping data for table `env_video`
+--
+
+INSERT INTO `env_video` (`videoid`, `userid`, `site`, `content`, `url`, `name`) VALUES
+(1, 'student', 'http://mm.cvaconsulting.com/moodle', 'This is a testing content for this video', 'YWaBuBlc_OU', 'Hector Goes Shopping'),
+(2, 'teacher', 'http://school.demo.moodle.net', 'Dota2 Liquid vs PR', 'A5EiPgnv9e0', 'The Entertainers YouTube'),
+(3, 'teacher', 'http://school.demo.moodle.net', 'Video music Vet mua Vu Cat Tuong', 'BTbzNK16X88', 'A star is born'),
+(4, 'testuser1', 'http://pcnguyen.dyndns.org/moodle', '10 reason why you hate valentine day', 'lgPkuAO3w1k', 'Hector goes shopping');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
